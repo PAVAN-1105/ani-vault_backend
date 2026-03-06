@@ -4,17 +4,29 @@ const cors = require('cors');
 
 const app = express();
 
-// --- CHANGE 1: Dynamic CORS ---
-// During development, we allow everything. 
-// Once deployed, you can change this to your Vercel URL for better security.
+// --- CHANGE 1: Professional Dynamic CORS ---
+// This will allow any Vercel URL or your local environment to talk to the server
 app.use(cors({
-  origin: 'https://anime-tracker-ui.vercel.app?_vercel_share=xJr9S3HuREpd4DX2QiovSvjGO99WW9Mi'
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    const allowedPatterns = [/vercel\.app$/, /localhost:4200$/];
+    const isAllowed = allowedPatterns.some(pattern => pattern.test(origin));
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS Error: This origin is not allowed by Pavan\'s Server'));
+    }
+  },
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 })); 
 
 app.use(express.json());
 
-// --- CHANGE 2: Environment Variables for Security ---
-// We use process.env to hide your password from the public code
+// --- CHANGE 2: Environment Variables ---
 const uri = process.env.MONGODB_URI || "mongodb+srv://pavan:Krish%40511@animecluster.1tamvjb.mongodb.net/anime_vault?appName=AnimeCluster";
 
 mongoose.connect(uri)
@@ -66,8 +78,7 @@ app.delete('/api/animes/:id', async (req, res) => {
   }
 });
 
-// --- CHANGE 3: Dynamic Port for Render ---
-// Render will automatically assign a port through process.env.PORT
+// --- CHANGE 3: Dynamic Port ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
