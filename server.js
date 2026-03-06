@@ -7,7 +7,9 @@ const app = express();
 // --- CHANGE 1: Dynamic CORS ---
 // During development, we allow everything. 
 // Once deployed, you can change this to your Vercel URL for better security.
-app.use(cors()); 
+app.use(cors({
+  origin: 'https://anime-tracker-ui.vercel.app?_vercel_share=xJr9S3HuREpd4DX2QiovSvjGO99WW9Mi'
+})); 
 
 app.use(express.json());
 
