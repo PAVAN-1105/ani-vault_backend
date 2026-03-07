@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -27,7 +28,7 @@ app.use(cors({
 app.use(express.json());
 
 // --- CHANGE 2: Environment Variables ---
-const uri = process.env.MONGODB_URI || "mongodb+srv://pavan:Krish%40511@animecluster.1tamvjb.mongodb.net/anime_vault?appName=AnimeCluster";
+const uri = process.env.MONGODB_URI;
 
 mongoose.connect(uri)
   .then(() => console.log("✅ Successfully connected to MongoDB!"))
